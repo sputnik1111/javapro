@@ -109,7 +109,7 @@ public class TestRunner {
     }
 
     private static Object[] extractMethodParams(Method method, CsvSource csvSource) {
-        if (csvSource == null) return new Object[0];
+        if (csvSource == null) return null;
         String[] strParams = csvSource.value().split(",");
         if (strParams.length > method.getParameterCount())
             throw new IllegalArgumentException(method.getName() + " method is marked CsvSource annotation," +
