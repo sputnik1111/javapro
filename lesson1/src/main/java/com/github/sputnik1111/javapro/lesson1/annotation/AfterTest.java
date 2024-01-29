@@ -1,4 +1,4 @@
-package lesson1.annotation;
+package com.github.sputnik1111.javapro.lesson1.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package lesson1.annotation;
+package com.github.sputnik1111.javapro.lesson1.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface BeforeSuite {
+public @interface CsvSource {
+    String value();
 }

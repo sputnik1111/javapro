@@ -1,11 +1,11 @@
-package lesson1.testsuite;
+package com.github.sputnik1111.javapro.lesson1.testsuite;
 
-import lesson1.annotation.AfterSuite;
-import lesson1.annotation.AfterTest;
-import lesson1.annotation.BeforeSuite;
-import lesson1.annotation.BeforeTest;
-import lesson1.annotation.CsvSource;
-import lesson1.annotation.Test;
+import com.github.sputnik1111.javapro.lesson1.annotation.AfterSuite;
+import com.github.sputnik1111.javapro.lesson1.annotation.BeforeTest;
+import com.github.sputnik1111.javapro.lesson1.annotation.CsvSource;
+import com.github.sputnik1111.javapro.lesson1.annotation.Test;
+import com.github.sputnik1111.javapro.lesson1.annotation.AfterTest;
+import com.github.sputnik1111.javapro.lesson1.annotation.BeforeSuite;
 
 public class TestClass2 {
 
