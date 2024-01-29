@@ -50,14 +50,12 @@ public class TestRunner {
         Method afterSuiteMethod = findMethodWithEmptyParam(testClass, AfterSuite.class, true)
                 .orElse(null);
 
-        if (beforeSuiteMethod != null) beforeSuiteMethod.invoke(null);
+        runTestMethods(testClass, beforeSuiteMethod, afterSuiteMethod);
 
-        runTestMethods(testClass);
 
-        if (afterSuiteMethod != null) afterSuiteMethod.invoke(null);
     }
 
-    private static void runTestMethods(Class<?> testClass)
+    private static void runTestMethods(Class<?> testClass, Method beforeSuiteMethod, Method afterSuiteMethod)
             throws InvocationTargetException, IllegalAccessException, InstantiationException {
 
         Object instanceTestClass = createInstance(testClass);
@@ -71,15 +69,23 @@ public class TestRunner {
         Method beforeMethod = findMethodWithEmptyParam(testClass, BeforeTest.class, false)
                 .orElse(null);
 
-        Method afterSuiteMethod = findMethodWithEmptyParam(testClass, AfterTest.class, false)
+        Method afterMethod = findMethodWithEmptyParam(testClass, AfterTest.class, false)
                 .orElse(null);
 
-        for (Method testMethod : testMethods) {
-            if (beforeMethod != null) beforeMethod.invoke(instanceTestClass);
-            invokeTestMethod(instanceTestClass, testMethod);
-            if (afterSuiteMethod != null) afterSuiteMethod.invoke(instanceTestClass);
-        }
+        if (beforeSuiteMethod != null) beforeSuiteMethod.invoke(null);
 
+        try {
+            for (Method testMethod : testMethods) {
+                if (beforeMethod != null) beforeMethod.invoke(instanceTestClass);
+                try {
+                    invokeTestMethod(instanceTestClass, testMethod);
+                } finally {
+                    if (afterMethod != null) afterMethod.invoke(instanceTestClass);
+                }
+            }
+        } finally {
+            if (afterSuiteMethod != null) afterSuiteMethod.invoke(null);
+        }
 
     }
 
