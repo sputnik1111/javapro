@@ -51,10 +51,9 @@ public class ExampleThreadPoll {
         public void run() {
 
             while (!shutdown) {
-                Runnable r;
+                Runnable r = null;
                 synchronized (monitor) {
-                    r = tasks.poll();
-                    if (r == null) {
+                    if (tasks.isEmpty()) {
                         try {
                             monitor.wait();
                             r = tasks.poll();
@@ -66,7 +65,7 @@ public class ExampleThreadPoll {
                 if (r != null) {
                     try {
                         r.run();
-                    } catch (Throwable e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
