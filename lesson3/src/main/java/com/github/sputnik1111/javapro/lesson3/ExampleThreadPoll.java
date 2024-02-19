@@ -29,12 +29,14 @@ public class ExampleThreadPoll {
         }
     }
 
-    public synchronized void shutdown() {
+    public void shutdown() {
         if (shutdown) return;
-        shutdown = true;
-        tasks.clear();
-        threads.forEach(Thread::interrupt);
-
+        synchronized (monitor) {
+            if (shutdown) return;
+            shutdown = true;
+            tasks.clear();
+            threads.forEach(Thread::interrupt);
+        }
     }
 
     private void runThreads(int numPoll) {
