@@ -81,14 +81,10 @@ public class UserDao {
             StatementCallBack<T> callBack
     ) {
 
-        try (Connection connection = dataSource.getConnection()) {
-            try {
-                try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                    return callBack.execute(preparedStatement);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)
+        ) {
+            return callBack.execute(preparedStatement);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
