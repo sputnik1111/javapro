@@ -1,11 +1,11 @@
 package com.github.sputnik1111.javapro.lesson5.domain.user;
 
-public class User {
+public class UserEntity {
     private Long id;
 
     private String username;
 
-    public User(Long id, String username) {
+    public UserEntity(Long id, String username) {
         this.id = id;
         this.username = username;
     }

@@ -1,6 +1,6 @@
 package com.github.sputnik1111.javapro.lesson5.domain.product;
 
-public class Product {
+public class ProductEntity {
     private Long id;
 
     private Long userId;
@@ -11,7 +11,7 @@ public class Product {
 
     private TypeProduct typeProduct;
 
-    public Product(Long id, long userId, String account, long balance, TypeProduct typeProduct) {
+    public ProductEntity(Long id, long userId, String account, long balance, TypeProduct typeProduct) {
 
         if (account == null)
             throw new IllegalArgumentException(" account is null ");
@@ -26,12 +26,12 @@ public class Product {
         this.typeProduct = typeProduct;
     }
 
-    public enum TypeProduct {
-        CARD, BILL
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getUserId() {

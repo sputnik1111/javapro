@@ -1,11 +1,9 @@
 package com.github.sputnik1111.javapro.lesson5.domain.user;
 
-import com.github.sputnik1111.javapro.lesson5.infrastructure.JdbcTemplate;
+import com.github.sputnik1111.javapro.lesson5.infrastructure.jdbc.JdbcTemplate;
+import com.github.sputnik1111.javapro.lesson5.infrastructure.jdbc.RowMapper;
 import org.springframework.stereotype.Component;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,17 +12,25 @@ public class UserDao {
 
     private final JdbcTemplate template;
 
+    private final RowMapper<UserEntity> userMapper = (rs) -> new UserEntity(
+            rs.getLong("id"),
+            rs.getString("username")
+    );
+
+    private final RowMapper<Long> userIdMapper = (rs) -> rs.getLong("id");
+
+
     public UserDao(JdbcTemplate template) {
         this.template = template;
     }
 
-    public void insert(User user) {
-        String sql = "INSERT INTO users (id,username) values (?,?)";
-        template.execute(sql, preparedStatement -> {
-            preparedStatement.setLong(1, user.getId());
-            preparedStatement.setString(2, user.getUsername());
-            return preparedStatement.executeUpdate();
-        });
+    public Long insert(String username) {
+        String sql = "INSERT INTO users (username) values (?) RETURNING id";
+        return template.executeQuery(
+                sql,
+                preparedStatement -> preparedStatement.setString(1, username),
+                userIdMapper
+        ).get(0);
     }
 
     public boolean update(Long userId, String userName) {
@@ -44,27 +50,26 @@ public class UserDao {
         });
     }
 
-    public Optional<User> findById(Long userId) {
+    public Optional<UserEntity> findById(Long userId) {
         String sql = "SELECT id,username FROM users WHERE id = ?";
-        List<User> users = template.execute(sql, preparedStatement -> {
-            preparedStatement.setLong(1, userId);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return mapResultSet(resultSet);
-            }
-        });
-
-        return users.isEmpty()
+        List<UserEntity> userEntities = template.executeQuery(
+                sql,
+                preparedStatement -> preparedStatement.setLong(1, userId),
+                userMapper
+        );
+        return userEntities.isEmpty()
                 ? Optional.empty()
-                : Optional.of(users.get(0));
+                : Optional.of(userEntities.get(0));
     }
 
-    public List<User> findAll() {
+    public List<UserEntity> findAll() {
         String sql = "SELECT id,username FROM users";
-        return template.execute(sql, preparedStatement -> {
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return mapResultSet(resultSet);
-            }
-        });
+        return template.executeQuery(
+                sql,
+                preparedStatement -> {
+                },
+                userMapper
+        );
     }
 
     public void clear() {
@@ -74,16 +79,6 @@ public class UserDao {
         );
     }
 
-    private List<User> mapResultSet(ResultSet rs) throws SQLException {
-        List<User> result = new ArrayList<>();
-        while (rs.next()) {
-            result.add(new User(
-                    rs.getLong("id"),
-                    rs.getString("username")
-            ));
-        }
-        return result;
-    }
 
 
 }
